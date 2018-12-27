@@ -1,0 +1,40 @@
+--3decbbe8-7ad4-465e-b939-42a3e42f10c1
+set verify off
+set feedback off
+set echo off
+set termout off
+set term off
+set heading off
+set trimout on
+set trimspool on
+set pagesize 0
+spool {}
+
+set linesize 2000
+whenever sqlerror exit failure;
+alter session set optimizer_mode=all_rows;
+alter session set nls_numeric_characters = '. ';
+
+column row_cnt_col noprint new_value row_cnt
+
+select 
+	t.*,
+	count(*) over() AS row_cnt_col
+from 
+(
+{}
+) t;
+
+spool off;
+
+spool {}
+
+select 
+trim(&row_cnt) as total_rows_found
+from dual;
+
+spool off;
+
+exit;
+
+
