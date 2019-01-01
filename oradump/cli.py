@@ -1,4 +1,6 @@
+from datetime import datetime
 import click
+
 from ora_system import OraSystem
 from ora_table import OraTable
 from ora_params import Params
@@ -10,7 +12,7 @@ from decorators import logging, benchmark, exception
 @click.option('--table')
 @click.option('--dtbegin')
 @click.option('--dtend')
-@click.option('--dtsys')
+@click.option('--dtsys', default=datetime.today().strftime("%d.%m.%Y"))
 def cli(sourcecode, table, dtbegin, dtend, dtsys):
     _sys = OraSystem(sourcecode)
     _from_cli = (table, dtbegin, dtend, dtsys)
