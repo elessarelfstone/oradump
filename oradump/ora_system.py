@@ -14,10 +14,6 @@ class OraSystem:
     _crc_name_format = "{}_{}.crc"
     sql_template_suffix = "sqtmpl"
     main_template = "main.sqtmpl"
-    # test
-    login = "reporter"
-    password = "ciuyrhvv"
-
     def __init__(self, code):
         self._code = code
         self._set_envs()
