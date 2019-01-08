@@ -1,39 +1,37 @@
+import re
+from pathlib import Path
+from subprocess import Popen, PIPE
 from datetime import datetime
-import tempfile
 import attr
+from utils import Utils
 
 
 def is_datetime(instance, attribute, value):
     try:
         dt = datetime.strptime(value, '%d.%m.%Y')
-    except:
+    except Exception:
         raise TypeError("{} is not instance of datetime".format(value))
 
 
-@attr.s
-class SystemContext:
-    source_code = attr.ib()
-    conn_str = attr.ib()
-    temp_dir = attr.ib()
-    data_dir = attr.ib()
+def is_int(instance, attribute, value):
+    try:
+        int_val = int(value)
+    except Exception:
+        raise TypeError("{} is not instance of int".format(value))
 
-    @classmethod
-    def from_tuple(cls, tpl):
-        return cls(*tpl)
 
 @attr.s
 class OraSqlParams:
     dtbegin = attr.ib(validator=attr.validators.optional([is_datetime]))
     dtend = attr.ib(validator=attr.validators.optional([is_datetime]))
 
-
     @classmethod
     def from_tuple(cls, tpl):
         return cls(*tpl)
 
-    # @classmethod
-    # def asdict(cls, params):
-    #     for
+    @classmethod
+    def from_dict(cls, dct):
+        return cls(**dct)
 
 
 class OraDump:
@@ -42,7 +40,15 @@ class OraDump:
     def __init__(self, source_code, conn_str):
         self.source_code = source_code
         self.conn_str = conn_str
-        # self.temp_dir = tempfile.gettempdir()
+
+    @staticmethod
+    def _get_sqlplus_message(stdout):
+        search = re.search(r'.*ORA.*', stdout)
+        if search:
+            mess = search.group(0).strip()
+        else:
+            mess = 'UNKHOWN'
+        return mess
 
     def _prepare_script(self, template, csv, params):
         crc = csv.parent / "{}.crc".format(csv.stem)
@@ -50,12 +56,21 @@ class OraDump:
         return script
 
     def _run_script(self, script):
-        pass
+        session = Popen(["sqlplus", "-S", self.conn_str], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+        session.stdin.write(script.encode())
+        out, err = session.communicate('\n exit;'.encode())
+        return session.returncode, err, out
 
-    # def dump(self, ):
-    #
-    #
+    def dump(self, template, csv, params):
+        try:
+            csv.parents[0].mkdir(parents=True, exist_ok=True)
+            script = self._prepare_script(template, csv, params)
+            rcode, err, out = self._run_script(script)
+            if rcode != 0:
+                raise Exception(self._get_sqlplus_message(out))
+            return Utils.file_row_count(csv)
+        except Exception:
+            raise
 
-ora_params = OraSqlParams.from_tuple((None, "11.08.2018"))
 
 
