@@ -34,6 +34,14 @@ class OraSqlParams:
         return cls(**dct)
 
 
+class OraSqlExecutionError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return "{}:{}".format(self.__class__, self.message)
+
+
 class OraDump:
     main_template = "main.sqtmpl"
 
