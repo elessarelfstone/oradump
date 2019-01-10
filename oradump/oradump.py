@@ -1,13 +1,15 @@
 import re
 from pathlib import Path
+import os
 from subprocess import Popen, PIPE
 from datetime import datetime
 import attr
-from utils import Utils
+from oradump.utils import Utils
 
 
 DATE_FORMAT = "%d.%m.%Y"
 MAIN_TEMPLATE = Path(__file__).parent / "main.sqtmpl"
+
 
 def is_datetime(instance, attribute, value):
     try:
@@ -46,8 +48,6 @@ class OraDumpError(Exception):
 
 
 class OraDump:
-
-
     def __init__(self, source_code, conn_str):
         self.source_code = source_code
         self.conn_str = conn_str
@@ -61,10 +61,11 @@ class OraDump:
             mess = 'UNKHOWN'
         return mess
 
-    def _prepare_script(self, template, csv, params):
+    @staticmethod
+    def _prepare_script(template, csv, params):
         crc = csv.parent / "{}.crc".format(csv.stem)
         script = Path(MAIN_TEMPLATE).read_text(encoding="utf8").format(csv, template.format(**params), crc)
-        return script
+        return script, crc
 
     def _run_script(self, script):
         session = Popen(["sqlplus", "-S", self.conn_str], stdout=PIPE, stdin=PIPE, stderr=PIPE)
@@ -72,14 +73,24 @@ class OraDump:
         out, err = session.communicate('\n exit;'.encode())
         return session.returncode, err, out
 
-    def dump(self, template, csv, params):
+    def dump(self, template, csv, params, compress=True):
         try:
             csv.parents[0].mkdir(parents=True, exist_ok=True)
-            script = self._prepare_script(template, csv, params)
+            script, crc = self._prepare_script(template, csv, params)
             rcode, err, out = self._run_script(script)
             if rcode != 0:
                 raise OraDumpError(self._get_sqlplus_message(out))
-            return Utils.file_row_count(csv)
+
+            csv_rows_cnt = Utils.file_row_count(csv)
+            crc_rows_cnt = int(Path(crc).read_text().strip())
+
+            if compress:
+                try:
+                    Utils.gzip(str(csv))
+                finally:
+                    os.remove(csv)
+
+            return csv_rows_cnt, crc_rows_cnt
         except Exception:
             raise
 

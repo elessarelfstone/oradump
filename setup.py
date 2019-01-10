@@ -12,13 +12,12 @@ def read_requirements(filename):
         return result
 
 
-setup(
-    name='OracleDataDump',
-    version='1.0',
-    py_modules=['oradump'],
-    install_requires=read_requirements('requirements.txt'),
-    entry_points='''
-        [console_scripts]
-        oradump=oradump.cli:cli
-    ''',
-)
+if __name__ == "__main__":
+    setup(
+        name='oradump',
+        author='Sdykov Dauren',
+        version='1.0',
+        py_modules=['oradump'],
+        install_requires=read_requirements('requirements.txt'),
+        description='Just a package for simple extracting data from Oracle database',
+    )
