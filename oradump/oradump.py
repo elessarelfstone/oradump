@@ -7,6 +7,7 @@ from utils import Utils
 
 
 DATE_FORMAT = "%d.%m.%Y"
+MAIN_TEMPLATE = Path(__file__).parent / "main.sqtmpl"
 
 def is_datetime(instance, attribute, value):
     try:
@@ -45,7 +46,7 @@ class OraDumpError(Exception):
 
 
 class OraDump:
-    main_template = "main.sqtmpl"
+
 
     def __init__(self, source_code, conn_str):
         self.source_code = source_code
@@ -62,7 +63,7 @@ class OraDump:
 
     def _prepare_script(self, template, csv, params):
         crc = csv.parent / "{}.crc".format(csv.stem)
-        script = Path(self.main_template).read_text(encoding="utf8").format(csv, template.format(params), crc)
+        script = Path(MAIN_TEMPLATE).read_text(encoding="utf8").format(csv, template.format(**params), crc)
         return script
 
     def _run_script(self, script):
