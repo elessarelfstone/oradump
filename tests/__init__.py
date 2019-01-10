@@ -1,1 +1,1 @@
-from oradump
+date_format = "%d.%m.%Y"

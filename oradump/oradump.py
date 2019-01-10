@@ -6,9 +6,11 @@ import attr
 from utils import Utils
 
 
+DATE_FORMAT = "%d.%m.%Y"
+
 def is_datetime(instance, attribute, value):
     try:
-        dt = datetime.strptime(value, '%d.%m.%Y')
+        dt = datetime.strptime(value, DATE_FORMAT)
     except Exception:
         raise TypeError("{} is not instance of datetime".format(value))
 
@@ -34,7 +36,7 @@ class OraSqlParams:
         return cls(**dct)
 
 
-class OraSqlExecutionError(Exception):
+class OraDumpError(Exception):
     def __init__(self, message):
         self.message = message
 
@@ -60,7 +62,7 @@ class OraDump:
 
     def _prepare_script(self, template, csv, params):
         crc = csv.parent / "{}.crc".format(csv.stem)
-        script = self.main_template.format(csv, template.format(params), crc)
+        script = Path(self.main_template).read_text(encoding="utf8").format(csv, template.format(params), crc)
         return script
 
     def _run_script(self, script):
@@ -75,7 +77,7 @@ class OraDump:
             script = self._prepare_script(template, csv, params)
             rcode, err, out = self._run_script(script)
             if rcode != 0:
-                raise Exception(self._get_sqlplus_message(out))
+                raise OraDumpError(self._get_sqlplus_message(out))
             return Utils.file_row_count(csv)
         except Exception:
             raise
