@@ -14,15 +14,16 @@ oradump
 
 ### Использование
 
-Создание экземпляра класса происходит для конкретного источничка данных. Передаваемые параметры:
-   - source_code - код источника данных. Используется для  формирования имени файла csv.
+Создание экземпляра класса происходит для конкретного источничка данных. Передаваемые параметры:   
    - conn_str - строка подключения к sqlplus в формате `ПОЛЬЗОВАТЕЛЬ/ПАРОЛЬ@TNS_СТРОКА_ПОДКЛЮЧЕНИЯ`.
 
 Пример: 
 ```python
+import oradump
+
 src_code = 'asr_kar'
 con_str = 'user/password@(DESCRIPTION = (ADDRESS_LIST =  (ADDRESS = (PROTOCOL=TCP)(HOST=XXX.XXX.XXX.XXX)(PORT=1521)))(CONNECT_DATA = (SERVICE_NAME=SID.alias)))'
-oradmp_instance = oradump.OraDump(src, con_str)
+oradmp_instance = oradump.OraDump(con_str)
 ```
 
 Вызов функции dump делает основную работу. Передаваемые параметры:
