@@ -15,9 +15,9 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
     def setUp(self):
         # load .env file to get user and password of Oracle database
         load_dotenv(ENV_FILE)
-        self.source_code = "asr_uralsk"
+        source_code = "asr_uralsk"
         # get tns string
-        tns_path_file = TNS_FILES_PATH / self.source_code
+        tns_path_file = TNS_FILES_PATH / source_code
         with open(str(tns_path_file)) as f:
             tns = f.read()
 
@@ -32,7 +32,7 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
         params = {"dtbegin": "01.02.2018", "dtend": "05.02.2018"}
         csv = self.csv_dir / "{}_{}-{}.csv".format("asr_uralsk", date_for_csv(params["dtbegin"]), date_for_csv(params["dtend"]))
         template_path = Path(TEMPLATES_PATH / 'db.tdr.sqtmpl')
-        session = oradump.OraDump(self.source_code, self.sqlplus_conn_str)
+        session = oradump.OraDump(self.sqlplus_conn_str)
         csv_row_count, crc_row_count = session.dump(template_path.read_text(encoding="utf8"), csv, params)
         self.assertIsInstance(csv_row_count, int)
         self.assertIsInstance(crc_row_count, int)

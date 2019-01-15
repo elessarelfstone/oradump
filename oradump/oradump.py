@@ -48,8 +48,7 @@ class OraDumpError(Exception):
 
 
 class OraDump:
-    def __init__(self, source_code, conn_str):
-        self.source_code = source_code
+    def __init__(self, conn_str):
         self.conn_str = conn_str
 
     @staticmethod
@@ -89,7 +88,6 @@ class OraDump:
                     Utils.gzip(str(csv))
                 finally:
                     os.remove(csv)
-
             return csv_rows_cnt, crc_rows_cnt
         except Exception:
             raise
