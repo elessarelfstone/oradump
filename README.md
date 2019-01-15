@@ -21,7 +21,7 @@ oradump
 Пример: 
 ```python
 src_code = 'asr_kar'
-con_str = '(DESCRIPTION = (ADDRESS_LIST =  (ADDRESS = (PROTOCOL=TCP)(HOST=10.71.200.15)(PORT=1521)))(CONNECT_DATA = (SERVICE_NAME=URALASR.weskaz)))'
+con_str = 'user/password@(DESCRIPTION = (ADDRESS_LIST =  (ADDRESS = (PROTOCOL=TCP)(HOST=10.71.200.15)(PORT=1521)))(CONNECT_DATA = (SERVICE_NAME=URALASR.weskaz)))'
 oradmp_instance = oradump.OraDump(src, con_str)
 ```
 

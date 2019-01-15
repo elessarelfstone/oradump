@@ -62,7 +62,7 @@ class OraDump:
         return mess
 
     @staticmethod
-    def _prepare_script(template, csv, params):
+    def prepare_script(template, csv, params):
         crc = csv.parent / "{}.crc".format(csv.stem)
         script = Path(MAIN_TEMPLATE).read_text(encoding="utf8").format(csv, template.format(**params), crc)
         return script, crc
@@ -76,7 +76,7 @@ class OraDump:
     def dump(self, template, csv, params, compress=True):
         try:
             csv.parents[0].mkdir(parents=True, exist_ok=True)
-            script, crc = self._prepare_script(template, csv, params)
+            script, crc = OraDump.prepare_script(template, csv, params)
             rcode, err, out = self._run_script(script)
             if rcode != 0:
                 raise OraDumpError(self._get_sqlplus_message(out))
