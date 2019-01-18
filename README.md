@@ -21,7 +21,6 @@ oradump
 ```python
 import oradump
 
-src_code = 'asr_kar'
 con_str = 'user/password@(DESCRIPTION = (ADDRESS_LIST =  (ADDRESS = (PROTOCOL=TCP)(HOST=XXX.XXX.XXX.XXX)(PORT=1521)))(CONNECT_DATA = (SERVICE_NAME=SID.alias)))'
 oradmp_instance = oradump.OraDump(con_str)
 ```
