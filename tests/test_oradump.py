@@ -29,10 +29,11 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
         self.csv_dir = Path(tempfile.gettempdir()) / 'oradump'
         self.csv_dir.mkdir(parents=True, exist_ok=True)
 
+
     def test_asr_uralsk_tdr_for_first_five_days_of_feb(self):
         params = {"dtbegin": "01.02.2018", "dtend": "05.02.2018"}
         csv = self.csv_dir / "{}_{}-{}.csv".format(self.source_code, date_for_csv(params["dtbegin"]), date_for_csv(params["dtend"]))
-        template_path = Path(TEMPLATES_PATH / 'db.tdr.sqtmpl')
+        template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         session = oradump.OraDump(self.sqlplus_conn_str)
         csv_row_count, crc_row_count = session.dump(template_path.read_text(encoding="utf8"), csv, params)
         self.assertIsInstance(csv_row_count, int)
@@ -60,7 +61,7 @@ class TestOraDumpAsrAlmaty(unittest.TestCase):
     def test_asr_almaty_tdr_for_first_five_days_of_feb(self):
         params = {"dtbegin": "01.02.2018", "dtend": "05.02.2018"}
         csv = self.csv_dir / "{}_{}-{}.csv".format(self.source_code, date_for_csv(params["dtbegin"]), date_for_csv(params["dtend"]))
-        template_path = Path(TEMPLATES_PATH / 'db.tdr.sqtmpl')
+        template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         session = oradump.OraDump(self.sqlplus_conn_str)
         csv_row_count, crc_row_count = session.dump(template_path.read_text(encoding="utf8"), csv, params)
         self.assertIsInstance(csv_row_count, int)
