@@ -53,7 +53,7 @@ class OraDump:
 
     @staticmethod
     def _get_sqlplus_message(stdout):
-        search = re.search(r'.*ORA.*', stdout)
+        search = re.search(r'.*ORA.*', stdout.decode('utf-8'))
         if search:
             mess = search.group(0).strip()
         else:
