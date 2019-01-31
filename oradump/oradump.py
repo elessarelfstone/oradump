@@ -4,7 +4,7 @@ import os
 from subprocess import Popen, PIPE
 from datetime import datetime
 import attr
-from oradump.utils import Utils
+from utils import Utils
 
 
 DATE_FORMAT = "%d.%m.%Y"
@@ -23,20 +23,6 @@ def is_int(instance, attribute, value):
         int_val = int(value)
     except Exception:
         raise TypeError("{} is not instance of int".format(value))
-
-
-@attr.s
-class OraSqlParams:
-    dtbegin = attr.ib(validator=attr.validators.optional([is_datetime]))
-    dtend = attr.ib(validator=attr.validators.optional([is_datetime]))
-
-    @classmethod
-    def from_tuple(cls, tpl):
-        return cls(*tpl)
-
-    @classmethod
-    def from_dict(cls, dct):
-        return cls(**dct)
 
 
 class OraDumpError(Exception):
@@ -62,26 +48,28 @@ class OraDump:
 
     @staticmethod
     def prepare_script(template, csv, params):
-        crc = csv.parent / "{}.crc".format(csv.stem)
-        script = Path(MAIN_TEMPLATE).read_text(encoding="utf8").format(csv, template.format(**params), crc)
-        return script, crc
+        script = Path(MAIN_TEMPLATE).read_text(encoding="utf8").format(csv, template.format(**params))
+        return script
 
-    def _run_script(self, script):
+    def run_script(self, script):
         session = Popen(["sqlplus", "-S", self.conn_str], stdout=PIPE, stdin=PIPE, stderr=PIPE)
         session.stdin.write(script.encode())
         out, err = session.communicate('\n exit;'.encode())
         return session.returncode, err, out
 
-    def dump(self, template, csv, params, compress=True):
+    def dump(self, template, csv, params, compress=False):
         try:
+            crc_rows_cnt = -1
+            csv_rows_cnt = -1
             csv.parents[0].mkdir(parents=True, exist_ok=True)
-            script, crc = OraDump.prepare_script(template, csv, params)
-            rcode, err, out = self._run_script(script)
+            script = OraDump.prepare_script(template, csv, params)
+            rcode, err, out = self.run_script(script)
             if rcode != 0:
                 raise OraDumpError(self._get_sqlplus_message(out))
 
+            crc_rows_cnt = int(Utils.py_tail(csv, 2).split()[0])
+            Utils.clean_csv(csv)
             csv_rows_cnt = Utils.file_row_count(csv)
-            crc_rows_cnt = int(Path(crc).read_text().strip())
 
             if compress:
                 try:
@@ -91,6 +79,3 @@ class OraDump:
             return csv_rows_cnt, crc_rows_cnt
         except Exception:
             raise
-
-
-
