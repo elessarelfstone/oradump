@@ -59,6 +59,8 @@ class OraDump:
 
     def dump(self, template, csv, params, compress=False):
         try:
+            crc_rows_cnt = -1
+            csv_rows_cnt = -1
             csv.parents[0].mkdir(parents=True, exist_ok=True)
             script = OraDump.prepare_script(template, csv, params)
             rcode, err, out = self.run_script(script)
