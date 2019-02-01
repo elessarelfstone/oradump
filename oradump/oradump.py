@@ -4,7 +4,7 @@ import os
 from subprocess import Popen, PIPE
 from datetime import datetime
 import attr
-from utils import Utils
+from oradump.utils import Utils
 
 
 DATE_FORMAT = "%d.%m.%Y"

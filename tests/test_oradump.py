@@ -34,8 +34,9 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
 
     def test_asr_uralsk_tdr_for_firstday_of_curr_month(self):
         first_day = dt.today().replace(day=1).strftime("%d.%m.%Y")
-        params = self.params.update({"date": first_day})
+        params = dict({"date": first_day}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
+        # csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         session = oradump.OraDump(self.sqlplus_conn_str)
         csv_row_count, crc_row_count = session.dump(template_path.read_text(encoding="utf8"), csv, params)
@@ -47,7 +48,7 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
 
     def test_asr_uralsk_tdr_for_yesterday(self):
         yesterday = dt.today() - td(days=1)
-        params = self.params.update({"date": yesterday.strftime("%d.%m.%Y")})
+        params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         session = oradump.OraDump(self.sqlplus_conn_str)
@@ -77,7 +78,7 @@ class TestOraDumpAsrAlmaty(unittest.TestCase):
 
     def test_asr_almaty_tdr_for_firstday_of_curr_month(self):
         first_day = dt.today().replace(day=1).strftime("%d.%m.%Y")
-        params = self.params.update({"date": first_day})
+        params = dict({"date": first_day}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         session = oradump.OraDump(self.sqlplus_conn_str)
@@ -90,7 +91,7 @@ class TestOraDumpAsrAlmaty(unittest.TestCase):
 
     def test_asr_almaty_tdr_for_yesterday(self):
         yesterday = dt.today() - td(days=1)
-        params = self.params.update({"date": yesterday.strftime("%d.%m.%Y")})
+        params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         session = oradump.OraDump(self.sqlplus_conn_str)
@@ -120,7 +121,7 @@ class TestOraDumpAsrKaraganda(unittest.TestCase):
 
     def test_asr_almaty_tdr_for_firstday_of_curr_month(self):
         first_day = dt.today().replace(day=1).strftime("%d.%m.%Y")
-        params = self.params.update({"date": first_day})
+        params = dict({"date": first_day}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         session = oradump.OraDump(self.sqlplus_conn_str)
@@ -133,7 +134,7 @@ class TestOraDumpAsrKaraganda(unittest.TestCase):
 
     def test_asr_almaty_tdr_for_yesterday(self):
         yesterday = dt.today() - td(days=1)
-        params = self.params.update({"date": yesterday.strftime("%d.%m.%Y")})
+        params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         session = oradump.OraDump(self.sqlplus_conn_str)
