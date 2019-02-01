@@ -32,7 +32,7 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
         self.csv_dir = Path(tempfile.gettempdir()) / 'oradump'
         self.csv_dir.mkdir(parents=True, exist_ok=True)
 
-    def test_asr_uralsk_tdr_for_firstday_of_curr_month(self):
+    def test_tdr_for_firstday_of_curr_month(self):
         first_day = dt.today().replace(day=1).strftime("%d.%m.%Y")
         params = dict({"date": first_day}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
@@ -46,7 +46,7 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
         self.assertGreater(crc_row_count, 0)
         self.assertEqual(csv_row_count, crc_row_count)
 
-    def test_asr_uralsk_tdr_for_yesterday(self):
+    def test_tdr_for_yesterday(self):
         yesterday = dt.today() - td(days=1)
         params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
@@ -76,7 +76,7 @@ class TestOraDumpAsrAlmaty(unittest.TestCase):
         self.csv_dir = Path(tempfile.gettempdir()) / 'oradump'
         self.csv_dir.mkdir(parents=True, exist_ok=True)
 
-    def test_asr_almaty_tdr_for_firstday_of_curr_month(self):
+    def test_tdr_for_firstday_of_curr_month(self):
         first_day = dt.today().replace(day=1).strftime("%d.%m.%Y")
         params = dict({"date": first_day}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
@@ -89,7 +89,7 @@ class TestOraDumpAsrAlmaty(unittest.TestCase):
         self.assertGreater(crc_row_count, 0)
         self.assertEqual(csv_row_count, crc_row_count)
 
-    def test_asr_almaty_tdr_for_yesterday(self):
+    def test_tdr_for_yesterday(self):
         yesterday = dt.today() - td(days=1)
         params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
@@ -119,7 +119,7 @@ class TestOraDumpAsrKaraganda(unittest.TestCase):
         self.csv_dir = Path(tempfile.gettempdir()) / 'oradump'
         self.csv_dir.mkdir(parents=True, exist_ok=True)
 
-    def test_asr_almaty_tdr_for_firstday_of_curr_month(self):
+    def test_tdr_for_firstday_of_curr_month(self):
         first_day = dt.today().replace(day=1).strftime("%d.%m.%Y")
         params = dict({"date": first_day}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
@@ -132,7 +132,7 @@ class TestOraDumpAsrKaraganda(unittest.TestCase):
         self.assertGreater(crc_row_count, 0)
         self.assertEqual(csv_row_count, crc_row_count)
 
-    def test_asr_almaty_tdr_for_yesterday(self):
+    def test_tdr_for_yesterday(self):
         yesterday = dt.today() - td(days=1)
         params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
