@@ -1,5 +1,5 @@
 set verify off
-set feedback on
+set feedback off
 set echo off
 set termout off
 set term off
