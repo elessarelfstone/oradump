@@ -27,26 +27,21 @@ oradmp_instance = oradump.OraDump(con_str)
 
 Вызов функции dump делает основную работу. Передаваемые параметры:
 
- - [template] - скрипт-шаблон. Стандартный sql-скрипт со вставками для параметров. Для корректного формирования файла csv 
- необходимо выбираемый поля конкатенировать "разделителем"(delimiter). В нашем случае это запятая. 
- Во всех текстовых полях запятые должны быть заменены на любой другой(к примеру "|"). 
+ - [template] - скрипт-шаблон. Стандартный sql-скрипт со вставками для параметров.  
 Пример:
 ```sql
 select
-     field_1
-     ||','||id
-     ||','||first_name
-     ||','||last_name
-     ||','||birth_day
+     field_1,
+     id,
+     first_name,
+     last_name,
+     birth_day,
      ....
-     ||','||field_N 
+     field_N ,
  from scheme.employees
- where birth_day between to_date('{dtbegin}', 'dd.mm.yyyy') and to_date('{dtend}', 'dd.mm.yyyy')
+ where birth_day = to_date('{date}', 'dd.mm.yyyy')
 ```
 
-доступные sql параметры на данный момент:
-  - dtbegin - начало временного диапазона
-  - dtend - конец временного диапазона
 
 
  * [csv] - путь до файла csv
