@@ -16,8 +16,9 @@ if __name__ == "__main__":
     setup(
         name='oradump',
         author='Sdykov Dauren',
+        url="https://github.com/elessarelfstone/oradump",
         version='1.0',
-        py_modules=['oradump'],
+        packages=['oradump'],
         install_requires=read_requirements('requirements.txt'),
         description='Just a package for simple extracting data from Oracle database',
     )
