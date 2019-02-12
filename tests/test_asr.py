@@ -36,10 +36,8 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
         first_day = dt.today().replace(day=1).strftime("%d.%m.%Y")
         params = dict({"date": first_day}, **self.params)
         csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
-        # csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
-        session = oradump.OraDump(self.sqlplus_conn_str)
-        csv_count_rows = session.dump(template_path.read_text(encoding="utf8"), csv, params)
+        csv_count_rows = oradump.OraDump.dump(self.sqlplus_conn_str, template_path.read_text(encoding="utf8"), csv, params)
         self.assertGreater(csv_count_rows, 0)
 
     def test_tdr_for_yesterday(self):
@@ -47,8 +45,7 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
         params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
         csv = self.csv_dir / "{}_{}_{}.csv".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
-        session = oradump.OraDump(self.sqlplus_conn_str)
-        csv_count_rows = session.dump(template_path.read_text(encoding="utf8"), csv, params, True)
+        csv_count_rows = oradump.OraDump.dump(self.sqlplus_conn_str, template_path.read_text(encoding="utf8"), csv, params, True)
         self.assertGreater(csv_count_rows, 0)
 
 
@@ -73,8 +70,7 @@ class TestOraDumpAsrAlmaty(unittest.TestCase):
         params = dict({"date": first_day}, **self.params)
         csv = self.csv_dir / "{}_{}_{}.csv".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
-        session = oradump.OraDump(self.sqlplus_conn_str)
-        csv_count_rows = session.dump(template_path.read_text(encoding="utf8"), csv, params, True)
+        csv_count_rows = oradump.OraDump.dump(self.sqlplus_conn_str, template_path.read_text(encoding="utf8"), csv, params, True)
         self.assertGreater(csv_count_rows, 0)
 
     def test_tdr_for_yesterday(self):
@@ -82,8 +78,7 @@ class TestOraDumpAsrAlmaty(unittest.TestCase):
         params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
         csv = self.csv_dir / "{}_{}_{}.csv".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
-        session = oradump.OraDump(self.sqlplus_conn_str)
-        csv_count_rows = session.dump(template_path.read_text(encoding="utf8"), csv, params, True)
+        csv_count_rows = oradump.OraDump.dump(self.sqlplus_conn_str, template_path.read_text(encoding="utf8"), csv, params, True)
         self.assertGreater(csv_count_rows, 0)
 
 
@@ -108,8 +103,8 @@ class TestOraDumpAsrKaraganda(unittest.TestCase):
         params = dict({"date": first_day}, **self.params)
         csv = self.csv_dir / "{}_{}_{}.csv".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
-        session = oradump.OraDump(self.sqlplus_conn_str)
-        csv_count_rows = session.dump(template_path.read_text(encoding="utf8"), csv, params, True)
+        # session = oradump.OraDump(self.sqlplus_conn_str)
+        csv_count_rows = oradump.OraDump.dump(self.sqlplus_conn_str, template_path.read_text(encoding="utf8"), csv, params, True)
         self.assertGreater(csv_count_rows, 0)
 
     def test_tdr_for_yesterday(self):
@@ -117,7 +112,6 @@ class TestOraDumpAsrKaraganda(unittest.TestCase):
         params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
         csv = self.csv_dir / "{}_{}_{}.csv".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
-        session = oradump.OraDump(self.sqlplus_conn_str)
-        csv_count_rows = session.dump(template_path.read_text(encoding="utf8"), csv, params, True)
+        csv_count_rows = oradump.OraDump.dump(self.sqlplus_conn_str, template_path.read_text(encoding="utf8"), csv, params, True)
         self.assertGreater(csv_count_rows, 0)
 

@@ -1,6 +1,6 @@
 import re
-from pathlib import Path
 import os
+from pathlib import Path
 from subprocess import Popen, PIPE
 from datetime import datetime
 from oradump.utils import Utils
@@ -33,11 +33,8 @@ class OraDumpError(Exception):
 
 
 class OraDump:
-    def __init__(self, conn_str):
-        self.conn_str = conn_str
-
     @staticmethod
-    def _get_sqlplus_message(stdout):
+    def get_sqlplus_message(stdout):
         search = re.search(r'.*ORA.*', stdout.decode('utf-8'))
         if search:
             mess = search.group(0).strip()
@@ -50,20 +47,21 @@ class OraDump:
         script = Path(MAIN_TEMPLATE).read_text(encoding="utf8").format(csv, template.format(**params))
         return script
 
-    def run_script(self, script):
-        session = Popen(["sqlplus", "-S", self.conn_str], stdout=PIPE, stdin=PIPE, stderr=PIPE)
+    @staticmethod
+    def run_script(conn_str, script):
+        session = Popen(["sqlplus", "-S", conn_str], stdout=PIPE, stdin=PIPE, stderr=PIPE)
         session.stdin.write(script.encode())
         out, err = session.communicate('\n exit;'.encode())
         return session.returncode, err, out
 
-    def dump(self, template, csv, params, compress=False):
+    @staticmethod
+    def dump(conn_str, template, csv, params, compress=False):
         try:
             csv.parents[0].mkdir(parents=True, exist_ok=True)
             script = OraDump.prepare_script(template, csv, params)
-            rcode, err, out = self.run_script(script)
+            rcode, err, out = OraDump.run_script(conn_str, script)
             if rcode != 0:
-                raise OraDumpError(self._get_sqlplus_message(out))
-
+                raise OraDumpError(OraDump.get_sqlplus_message(out))
             rows_count = Utils.file_row_count(csv)
             if compress:
                 try:
