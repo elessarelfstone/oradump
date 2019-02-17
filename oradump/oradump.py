@@ -55,7 +55,7 @@ class OraDump:
         return session.returncode, err, out
 
     @staticmethod
-    def dump(conn_str, template, csv, params, compress=False):
+    def dump(conn_str, template, csv, params, compress=False, del_orig=False):
         try:
             csv.parents[0].mkdir(parents=True, exist_ok=True)
             script = OraDump.prepare_script(template, csv, params)
@@ -64,9 +64,8 @@ class OraDump:
                 raise OraDumpError(OraDump.get_sqlplus_message(out))
             rows_count = Utils.file_row_count(csv)
             if compress:
-                try:
-                    Utils.gzip(str(csv))
-                finally:
+                Utils.gzip(str(csv))
+                if del_orig:
                     os.remove(csv)
             return rows_count
         except Exception:
