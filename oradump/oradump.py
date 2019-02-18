@@ -55,7 +55,7 @@ class OraDump:
         return session.returncode, err, out
 
     @staticmethod
-    def dump(conn_str, template, csv, params, compress=False, del_orig=False):
+    def dump(conn_str, template, csv, params):
         try:
             csv.parents[0].mkdir(parents=True, exist_ok=True)
             script = OraDump.prepare_script(template, csv, params)
@@ -63,10 +63,22 @@ class OraDump:
             if rcode != 0:
                 raise OraDumpError(OraDump.get_sqlplus_message(out))
             rows_count = Utils.file_row_count(csv)
-            if compress:
+            return rows_count
+        except Exception:
+            raise
+
+    @staticmethod
+    def dump_gziped(conn_str, template, gzip, params, del_orig=False):
+        try:
+            suffixes = gzip.suffixes
+            if len(suffixes) > 2 and suffixes[len(suffixes) - 2] == '.csv' and suffixes[len(suffixes) - 1] == '.gzip':
+                csv = gzip.with_suffix('')
+                rows_count = OraDump.dump(conn_str, template, csv, params)
                 Utils.gzip(str(csv))
                 if del_orig:
                     os.remove(csv)
+            else:
+                raise OraDumpError("Name or path of specified file is wrong. Format .csv.gzip expected.")
             return rows_count
         except Exception:
             raise
