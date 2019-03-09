@@ -57,7 +57,8 @@ class OraDump:
     @staticmethod
     def dump(conn_str, template, csv, params):
         try:
-            csv.parents[0].mkdir(parents=True, exist_ok=True)
+            # csv = Path(csv)
+            # csv.parents[0].mkdir(parents=True, exist_ok=True)
             script = OraDump.prepare_script(template, csv, params)
             rcode, err, out = OraDump.run_script(conn_str, script)
             if rcode != 0:
@@ -70,9 +71,10 @@ class OraDump:
     @staticmethod
     def dump_gziped(conn_str, template, gzip, params, del_orig=False):
         try:
-            suffixes = gzip.suffixes
+            # gzip = Path(gzip)
+            suffixes = Path(gzip).suffixes
             if len(suffixes) > 2 and suffixes[len(suffixes) - 2] == '.csv' and suffixes[len(suffixes) - 1] == '.gzip':
-                csv = gzip.with_suffix('')
+                csv = Path(gzip).with_suffix('')
                 rows_count = OraDump.dump(conn_str, template, csv, params)
                 Utils.gzip(str(csv))
                 if del_orig:
@@ -81,4 +83,16 @@ class OraDump:
                 raise OraDumpError("Name or path of specified file is wrong. Format .csv.gzip expected.")
             return rows_count
         except Exception:
+            if os.path.exists(csv):
+                os.remove(csv)
             raise
+
+    # @staticmethod
+    # def load_to_postgres(csv, pg_params):
+    #
+    #
+    #
+    # @staticmethod
+    # def dump_to_postgres(conn_str, template, gzip, params, pg_params):
+
+

@@ -35,7 +35,9 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
     def test_tdr_for_firstday_of_curr_month(self):
         first_day = dt.today().replace(day=1).strftime("%d.%m.%Y")
         params = dict({"date": first_day}, **self.params)
-        csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
+
+        csv = os.path.join(self.csv_dir, "{}_{}_{}.csv".format(self.source_code, 'db.tdr', date_for_csv(params["date"])))
+        # csv = self.csv_dir / "{}_{}.csv".format(self.source_code, date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         csv_count_rows = oradump.OraDump.dump(self.sqlplus_conn_str, template_path.read_text(encoding="utf8"), csv, params)
         self.assertGreater(csv_count_rows, 0)
@@ -43,7 +45,8 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
     def test_tdr_for_yesterday(self):
         yesterday = dt.today() - td(days=1)
         params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
-        csv = self.csv_dir / "{}_{}_{}.csv".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
+        csv = os.path.join(self.csv_dir, "{}_{}_{}.csv".format(self.source_code, 'db.tdr', date_for_csv(params["date"])))
+        # csv = self.csv_dir / "{}_{}_{}.csv".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         csv_count_rows = oradump.OraDump.dump(self.sqlplus_conn_str, template_path.read_text(encoding="utf8"), csv, params)
         self.assertGreater(csv_count_rows, 0)
@@ -51,7 +54,9 @@ class TestOraDumpAsrUralsk(unittest.TestCase):
     def test_tdr_for_yesterday_compress(self):
         yesterday = dt.today() - td(days=1)
         params = dict({"date": yesterday.strftime("%d.%m.%Y")}, **self.params)
-        gziped_csv = self.csv_dir / "{}_{}_{}.csv.gzip".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
+        gziped_csv = os.path.join(self.csv_dir, "{}_{}_{}.csv.gzip".format(self.source_code, 'db.tdr', date_for_csv(params["date"])))
+        # gziped_csv = self.csv_dir, "{}_{}_{}.csv.gzip".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
+        # gziped_csv = self.csv_dir / "{}_{}_{}.csv.gzip".format(self.source_code, 'db.tdr', date_for_csv(params["date"]))
         template_path = Path(TEMPLATES_PATH / 'asr_db.tdr.sqtmpl')
         csv_count_rows = oradump.OraDump.dump_gziped(self.sqlplus_conn_str, template_path.read_text(encoding="utf8"), gziped_csv, params, True)
         self.assertGreater(csv_count_rows, 0)
