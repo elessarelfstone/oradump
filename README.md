@@ -1,24 +1,27 @@
 oradump
 =========
 
-Класс Oradump предназначен для простейшей выгрузки данных в csv формате. Поскольку Oradump работает поверх
-нативного клиента Oracle, мы получаем максимальную производительность и удобство.
+OraDump is an easy command-line tool for extracting data from Oracle database. It works over the native Oracle client,
+so you'll have the fastest and convenient way to get your data dumped.
 
-### Требования
+### Requirements
+- Since it works directly with native Oracle client, you need to have installed 12.2c(or higher) version of it on your computer.
+- Path to BIN directory of Oracle client have to be in PATH variable.
+- Set ENV variable `NLS_LANG` to encoding which used on your Oracle server. Like `AMERICAN_AMERICA.AL32UTF8`
+- Installed Python 3.6 or higher.
 
-- Установленный клиент Oracle(12.2c и выше)
-- Путь до папки `bin` клиента Oracle необходимо добавить в переменную PATH.
-- Выставить переменную NLS_LANG в соотвествии с кодировкой используемой на стороне сервера Oracle.(к примеру сервера АСР БИТТл - `AMERICAN_AMERICA.AL32UTF8`)
-- Подготовить скрипт-шаблон в формате стандартного SQL cо специальными вставками(placeholders) для параметров. 
+
+### Installation
+    pip install oradump 
 
 
-### Использование
+### Usage
 
-Вызов функции dump делает основную работу. Передаваемые параметры:   
-   - conn_str - строка подключения к sqlplus в формате `ПОЛЬЗОВАТЕЛЬ/ПАРОЛЬ@TNS_СТРОКА_ПОДКЛЮЧЕНИЯ`.
+Before utilize OraDump you need to prepare SQL-statement that will be used for retrieving data. 
+For values that will be changing you set placeholders like that `{start_date}`. So you'll have SQL script, but like as a template.
 
- - [template] - скрипт-шаблон. Стандартный sql-скрипт со вставками для параметров.  
-Пример:
+Example:
+
 ```sql
 select
      field_1,
@@ -33,18 +36,25 @@ select
 ```
 
 
+`from oradump import OraDump` 
 
- * [csv] - путь до файла csv
- * [params] - параметры которые будут передаваться в шаблон.
- * [compress] - признак необходимости компрессии(gzip, оригинал удаляется). По умолчанию True.
+By now, you can get data only in csv format. So to achieve this, you need to call `dump` or `dump_gziped`(if want get it compressed) functions.
+
+`dump` example:
+
+    rows_cnt = OraDump.dump(conn_str, template, csv, params)
+
+- conn_str - connection string that you specify when you connect to Oracle instance by native client(sqlplus). 
+Like `user/password@(DESCRIPTION = (ADDRESS_LIST =  (ADDRESS = (PROTOCOL=TCP)(HOST=XXX.XXX.XXX.XXX)(PORT=1521)))(CONNECT_DATA = (SERVICE_NAME=SID.alias)))`
+
+- template - SQL template described above
+- csv - path to target csv file
+- params - parameters passing into SQL template and substituting into according placeholders.
+
+`dump_gziped` example:
+
+    rows_cnt = OraDump.dump_gziped(conn_str, template, gzip, params, del_orig=False)
+- gzip - path to target gziped csv file
+- del_orig - whether if you want to delete csv file that OraDump gets before compressing.
  
-Пример: 
-```python
-from oradump import OraDump
-
-con_str = 'user/password@(DESCRIPTION = (ADDRESS_LIST =  (ADDRESS = (PROTOCOL=TCP)(HOST=XXX.XXX.XXX.XXX)(PORT=1521)))(CONNECT_DATA = (SERVICE_NAME=SID.alias)))'
-rows_count = OraDump.dump(con_str, template, csv, params)
-```
-
-Из примера выше видно, что возвращается количество записей в файле csv.
-
+If all went successful number of retrieved rows is returned. 

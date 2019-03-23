@@ -2,26 +2,12 @@ import re
 import os
 from pathlib import Path
 from subprocess import Popen, PIPE
-from datetime import datetime
+
 from oradump.utils import Utils
 
 
 DATE_FORMAT = "%d.%m.%Y"
 MAIN_TEMPLATE = Path(__file__).parent / "main.sqtmpl"
-
-
-def is_datetime(instance, attribute, value):
-    try:
-        dt = datetime.strptime(value, DATE_FORMAT)
-    except Exception:
-        raise TypeError("{} is not instance of datetime".format(value))
-
-
-def is_int(instance, attribute, value):
-    try:
-        int_val = int(value)
-    except Exception:
-        raise TypeError("{} is not instance of int".format(value))
 
 
 class OraDumpError(Exception):
@@ -44,6 +30,13 @@ class OraDump:
 
     @staticmethod
     def prepare_script(template, csv, params):
+        """
+        Get prepared sql script with substituted params and csv file path
+        :param template:
+        :param csv:
+        :param params:
+        :return:
+        """
         script = Path(MAIN_TEMPLATE).read_text(encoding="utf8").format(csv, template.format(**params))
         return script
 
@@ -53,6 +46,7 @@ class OraDump:
         session.stdin.write(script.encode())
         out, err = session.communicate('\n exit;'.encode())
         return session.returncode, err, out
+
 
     @staticmethod
     def dump(conn_str, template, csv, params):
@@ -86,13 +80,5 @@ class OraDump:
             if os.path.exists(csv):
                 os.remove(csv)
             raise
-
-    # @staticmethod
-    # def load_to_postgres(csv, pg_params):
-    #
-    #
-    #
-    # @staticmethod
-    # def dump_to_postgres(conn_str, template, gzip, params, pg_params):
 
 
