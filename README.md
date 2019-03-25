@@ -1,7 +1,7 @@
 oradump
 =========
 
-OraDump is an easy command-line tool for extracting data from Oracle database. It works over the native Oracle client,
+OraDump is a simple class for extracting data from Oracle database. It works over the native Oracle client,
 so you'll have the fastest and convenient way to get your data dumped.
 
 ### Requirements
@@ -56,5 +56,7 @@ Like `user/password@(DESCRIPTION = (ADDRESS_LIST =  (ADDRESS = (PROTOCOL=TCP)(HO
     rows_cnt = OraDump.dump_gziped(conn_str, template, gzip, params, del_orig=False)
 - gzip - path to target gziped csv file
 - del_orig - whether if you want to delete csv file that OraDump gets before compressing.
+
+purposes of rest of parameters are the same as in `dump`
  
 If all went successful number of retrieved rows is returned. 
