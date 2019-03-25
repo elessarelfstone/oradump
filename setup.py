@@ -23,7 +23,7 @@ if __name__ == "__main__":
         name='oradump',
         author='Dauren Sdykov',
         url="https://github.com/elessarelfstone/oradump",
-        version='1.0.0',
+        version='1.0.4',
         packages=['oradump'],
         install_requires=read_requirements('requirements.txt'),
         long_description=read_long_description(),

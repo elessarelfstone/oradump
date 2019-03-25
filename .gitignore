@@ -20,7 +20,6 @@ tabix/
 # Architecture
 architecture/
 
-MANIFEST.in
 
 # Distribution / packaging
 .Python
